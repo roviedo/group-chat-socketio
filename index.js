@@ -17,23 +17,25 @@ io.on('connection', function(socket){
   socket.broadcast.emit('hi');
 
   socket.on('chat message', function(obj){
-    console.log('users', users);
     io.emit('chat message', obj);
   });
 
   socket.on('add user', function(userName) {
     socket.userName = userName;
+    if (users.includes(userName)) return;
+
     users.push(userName);
     io.emit('add user', userName);
 
-    socket.broadcast.emit('user joined', {
-      username: socket.username,
+    io.emit('user joined', {
+      userName: socket.userName,
       users: users
     });
   });
 
   socket.on('disconnect', function(){
-    console.log('user disconnected');
+    console.log('user ' + socket.userName + 'disconnected');
+    users.pop(socket.userName);
   });
 });
 
