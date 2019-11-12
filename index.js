@@ -33,9 +33,12 @@ io.on('connection', function(socket){
     });
   });
 
-  socket.on('disconnect', function(){
-    console.log('user ' + socket.userName + 'disconnected');
-    users.pop(socket.userName);
+  socket.on('disconnect', function() {
+    var disconnectedUser = socket.userName;
+    users.pop(disconnectedUser);
+    io.emit('user left', {
+        disconnectedUser: disconnectedUser
+    });
   });
 });
 
